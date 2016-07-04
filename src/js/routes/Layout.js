@@ -14,10 +14,6 @@ class Layout extends React.Component {
       <div>
         <Header />
         {this.props.children}
-        <_.ButtonGroup>
-          <Link to="todo" activeClassName="test"><_.Button bsStyle="primary" bsSize="xsmall">ToDo</_.Button></Link>
-          <Link to="snake" activeClassName="test"><_.Button to="snake" bsStyle="primary" bsSize="xsmall">Snake</_.Button></Link>
-        </_.ButtonGroup>
         <Footer />
       </div>
     );

@@ -5,9 +5,13 @@ import { Link } from 'react-router';
 class Header extends React.Component {
   render() {
     return (
-      <header>
-        Header
-      </header>
+      <nav>
+        <Link to="todo" activeClassName="test">ToDo</Link>
+        {" | "}
+        <Link to="snake" activeClassName="test">Snake</Link>
+        {" | "}
+        <Link to="home" activeClassName="active">Home</Link>
+      </nav>
     );
   }
 }
