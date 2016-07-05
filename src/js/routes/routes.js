@@ -5,7 +5,6 @@ import HomePage from './HomePage';
 import Layout from './Layout';
 import Snake from './Snake';
 import ToDo from './ToDo';
-import ItsAlive from './ItsAlive';
 
 export default (
   <Route path="/" component={Layout}>
