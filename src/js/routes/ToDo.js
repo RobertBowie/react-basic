@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button, Row, Col, Grid } from 'react-bootstrap';
 
-import ToDoInput from './todo/ToDoInput';
+import ToDoInput from './todo/toDoInput';
+import ToDoItem from './todo/toDoItem';
 
 class ToDo extends React.Component {
   constructor() {
@@ -9,7 +10,8 @@ class ToDo extends React.Component {
     this.state = {
       tip: 'Type items and press "Enter".',
       items: [],
-      input: ''
+      input: '',
+      used: false
     }
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -22,14 +24,18 @@ class ToDo extends React.Component {
   }
 
   onInputSubmit(e) {
+    e.preventDefault();
     let items = this.state.items;
-    let input = '';
+    const input = '';
+    const used = true;
     items.push(this.state.input);
-    this.setState({items, input});
+    this.setState({items, input, used});
     console.log(this.state);
   }
 
   render() {
+    let showList = this.state.items.length > 0;
+
     return (
       <Grid>
         <Row>
@@ -45,7 +51,13 @@ class ToDo extends React.Component {
               onSubmit={this.onInputSubmit}
               onChange={this.onInputChange}
               inputVal={this.state.input}
+              placeholder={this.state.used ? '' : 'All the things...'}
             />
+            { showList &&
+            <ul>
+              {this.state.items.map(item => <ToDoItem key={item} text={item} />)}
+            </ul>
+            }
           </Col>
           <Col xsHidden md={4}></Col>
         </Row>

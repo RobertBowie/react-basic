@@ -1,7 +1,7 @@
 import React from 'react';
-import { ControlLabel, FormControl, FormGroup, HelpBlock } from 'react-bootstrap';
+import { FormControl, FormGroup, HelpBlock } from 'react-bootstrap';
 
-const ToDoInput = ({inputTip, inputVal, onChange, onSubmit, placeholder}) => {
+const toDoInput = ({inputTip, inputVal, onChange, onSubmit, placeholder}) => {
   return (
     <form onSubmit={onSubmit}>
       <FormGroup controlId="todoInput">
@@ -17,4 +17,4 @@ const ToDoInput = ({inputTip, inputVal, onChange, onSubmit, placeholder}) => {
   );
 };
 
-export default ToDoInput;
+export default toDoInput;

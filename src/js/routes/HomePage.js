@@ -6,7 +6,7 @@ class HomePage extends React.Component {
     return (
       <div>
         <Jumbotron>
-          <h1>React projects examples using ES6</h1>
+          <h1>React project examples using ES6</h1>
             <p>Written by <a href="https://www.linkedin.com/in/robertbowie">Robert Bowie</a></p>
         </Jumbotron>
       </div>
