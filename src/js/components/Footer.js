@@ -1,9 +1,12 @@
 import React from 'react';
+import { Navbar } from 'react-bootstrap';
 
 class Footer extends React.Component {
   render() {
     return (
-      <footer>footer</footer>
+      <footer>
+        <Navbar fixedBottom="true" />
+      </footer>
     );
   }
 }
