@@ -5,7 +5,7 @@ class Footer extends React.Component {
   render() {
     return (
       <footer>
-        <Navbar fixedBottom="true" />
+        <Navbar fixedBottom={true} />
       </footer>
     );
   }

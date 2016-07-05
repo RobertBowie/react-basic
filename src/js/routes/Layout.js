@@ -8,8 +8,6 @@ import Header from '../components/Header';
 
 class Layout extends React.Component {
   render() {
-    const { history } = this.props;
-    console.log(history.isActive('todo'));
     return (
       <div>
         <Header />
