@@ -3,8 +3,8 @@ import { FormControl, FormGroup, HelpBlock } from 'react-bootstrap';
 
 const toDoInput = ({inputTip, inputVal, onChange, onSubmit, placeholder}) => {
   return (
-    <form onSubmit={onSubmit} autoComplete={false}>
-      <FormGroup controlId="todoInput">
+    <form onSubmit={onSubmit}>
+      <FormGroup>
         <FormControl
 
           type="text"

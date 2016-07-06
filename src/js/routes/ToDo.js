@@ -9,7 +9,7 @@ class ToDo extends React.Component {
   constructor() {
     super();
     this.state = {
-      tip: 'Type items and press "Enter"!',
+      tip: 'Type items and press "Enter"',
       items: {},
       input: '',
       used: 0,
