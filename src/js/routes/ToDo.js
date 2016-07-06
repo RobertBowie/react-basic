@@ -9,10 +9,10 @@ class ToDo extends React.Component {
   constructor() {
     super();
     this.state = {
-      tip: 'Type items and press "Enter".',
+      tip: 'Type items and press "Enter"!',
       items: {},
       input: '',
-      used: false,
+      used: 0,
     }
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -43,23 +43,50 @@ class ToDo extends React.Component {
     }
   }
 
-  updateTip() {
-    const used = true;
-    const tip = 'Strike an item out by clicking it.';
-    this.setState({used, tip});
+  updateTip(num) {
+    let tip = '';
+    let used = this.state.used;
+    if (!used) {
+      used = 1;
+      tip = 'Strike an item out by clicking it.';
+    } else if (used === 1 && num === 1) {
+      used = 2;
+      tip = 'Remove an item by double clicking it.'
+    } else if (used === 2 && num === 2) {
+      used = 3;
+      tip = ' ';
+    }
+    console.log(used, num, !!tip);
+    if (tip) {
+      console.log('calling setState with: ', {used, tip});
+      this.setState({used, tip});
+    }
   }
 
   onLiClick(liKey, e) {
     const newStyle = {textDecoration: 'line-through'};
-    let newState = Object.assign({}, this.state.items);
-    newState[liKey].liStyle = newStyle;
-    console.log(newState);
-    this.setState({items: newState});
+    let newState = this.applyStyle(newStyle, liKey);
+    if (this.state.used === 1) {
+      this.updateTip(1);
+    }
+    this.setState({newState});
   }
 
-  onLiDoubleClick(e) {
-    const liStyle = {display: 'none'};
-    this.setState({liStyle});
+  onLiDoubleClick(liKey, e) {
+    const newStyle = {display: 'none'};
+    const newState = this.applyStyle(newStyle, liKey);
+    if (this.state.used === 2) {
+      this.updateTip(2);
+    }
+    this.setState({newState});
+  }
+
+  applyStyle(style, liKey) {
+    let newState = Object.assign({}, this.state);
+    let items = newState.items;
+    let item = items[liKey];
+    item.liStyle = style;
+    return newState;
   }
 
   render() {
@@ -87,11 +114,12 @@ class ToDo extends React.Component {
               {_map(this.state.items,
                 (val, key) => {
                   let boundClick = this.onLiClick.bind(this, key);
+                  let boundDoubleClick = this.onLiDoubleClick.bind(this, key);
                   return <ToDoItem
                     key={key}
                     text={key}
                     onClick={boundClick}
-                    onDoubleClick={this.onLiDoubleClick}
+                    onDoubleClick={boundDoubleClick}
                     style={val.liStyle}
                   />
                 }
