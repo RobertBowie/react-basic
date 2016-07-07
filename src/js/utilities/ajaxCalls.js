@@ -23,7 +23,7 @@ export function dbPost(item, context) {
 }
 
 export function get(context) {
-  $.get('http://127.0.0.1:7777/api/todoItems', result => {
+  return $.get('http://127.0.0.1:7777/api/todoItems', result => {
     const itemsArr = result.map(item => {
       return {content: item.content, style: JSON.parse(item.style), _id: item._id};
     });
