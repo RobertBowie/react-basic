@@ -28,8 +28,9 @@ class ToDo extends React.Component {
   componentDidMount() {
     this.serverRequest = $.get('http://127.0.0.1:7777/api/todoItems', result => {
       const itemsArr = result.map(item => {
-        return {content: item.content, style: item.style, _id: item._id};
+        return {content: item.content, style: JSON.parse(item.style), _id: item._id};
       });
+      console.log(itemsArr);
       this.setState({items: itemsArr});
     });
   }
@@ -43,23 +44,28 @@ class ToDo extends React.Component {
       url: 'http://127.0.0.1:7777/api/todoItems',
       data: JSON.stringify(item),
       contentType: 'application/json'
-    }, msg => console.log(msg) );
+    }, addedItem => {
+      let items = this.state.items;
+      let newItem = addedItem;
+      newItem.style = JSON.parse(addedItem.style);
+      items.push(newItem);
+      this.setState({items});
+      });
   }
 
   newItem() {
     const currInput = this.state.input;
     let item = {}; // {content: '', style: ''}
     item.content = currInput;
-    item.style = '';
-    this.formatThenPost(currInput);
-    return item;
+    item.style = '{}';
+    return this.formatThenPost(currInput);
   }
 
   formatThenPost(currInput, currStyle) {
-    const style = currStyle ? currStyle : '';
+    const style = currStyle ? currStyle : '{}';
     const content = currInput ? currInput : '';
     const toPost = {content, style};
-    this.dbPost(toPost);
+    return this.dbPost(toPost);
   }
 
   onInputChange(e) {
@@ -70,9 +76,8 @@ class ToDo extends React.Component {
   onInputSubmit(e) {
     e.preventDefault();
     const input = '';
-    let items = this.state.items;
-    items.push(this.newItem());
-    this.setState({items, input});
+    this.setState({input});
+    this.formatThenPost(this.state.input);
     if (!this.state.used) {
       this.updateTip();
     }
@@ -126,13 +131,22 @@ class ToDo extends React.Component {
   applyStyle(style, id) {
     let items = this.state.items;
     let item = items.filter(item => item._id === id)[0];
-    item.liStyle = style;
+    item.style = style;
+    this.dbStyleUpdate(item._id, {style});
     return items;
   }
 
+  dbStyleUpdate(key, style) {
+    $.ajax({
+      url: 'http://127.0.0.1:7777/api/todoItems/' + key,
+      contentType: 'application/json',
+      method: 'put',
+      data: JSON.stringify(style)
+    }, msg => console.log(msg) );
+  }
+
   render() {
-    let showList = Object.keys(this.state.items).length > 0;
-    console.log(this.state);
+    let showList = this.state.items.length > 0;
     return (
       <Grid>
         <Row>
@@ -161,7 +175,7 @@ class ToDo extends React.Component {
                     text={item.content}
                     onClick={boundClick}
                     onDoubleClick={boundDoubleClick}
-                    style={item.liStyle}
+                    style={item.style}
                   />
                 }
               )}

@@ -25,8 +25,3 @@ app.listen(7777, function () {
 // Connect to mongodb database
 mongoose.connect("mongodb://localhost/todoitemfinder");
 var db = mongoose.connection;
-
-db.once('open', function() {
-  var newTodo = new todoItem({content: 'testing a thing'});
-  console.log(newTodo);
-});
