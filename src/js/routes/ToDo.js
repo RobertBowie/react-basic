@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Row, Col, Grid } from 'react-bootstrap';
 import { map as _map } from 'lodash';
-import * as $ from 'jquery';
 
+import { dbDelete, dbPost, get, put } from '../utilities/ajaxCalls';
 import ToDoInput from './todo/toDoInput';
 import ToDoItem from './todo/toDoItem';
 
@@ -21,36 +21,16 @@ class ToDo extends React.Component {
     this.updateTip = this.updateTip.bind(this);
     this.onLiClick = this.onLiClick.bind(this);
     this.onLiDoubleClick = this.onLiDoubleClick.bind(this);
-    this.dbPost = this.dbPost.bind(this);
+    // this.dbPost = this.dbPost.bind(this);
     this.formatThenPost = this.formatThenPost.bind(this);
   }
 
   componentDidMount() {
-    this.serverRequest = $.get('http://127.0.0.1:7777/api/todoItems', result => {
-      const itemsArr = result.map(item => {
-        return {content: item.content, style: JSON.parse(item.style), _id: item._id};
-      });
-      console.log(itemsArr);
-      this.setState({items: itemsArr});
-    });
+    this.serverRequest = get(this);
   }
 
   componentWillUnmount() {
     this.serverRequest.abort();
-  }
-
-  dbPost(item) {
-    $.post({
-      url: 'http://127.0.0.1:7777/api/todoItems',
-      data: JSON.stringify(item),
-      contentType: 'application/json'
-    }, addedItem => {
-      let items = this.state.items;
-      let newItem = addedItem;
-      newItem.style = JSON.parse(addedItem.style);
-      items.push(newItem);
-      this.setState({items});
-      });
   }
 
   newItem() {
@@ -65,7 +45,7 @@ class ToDo extends React.Component {
     const style = currStyle ? currStyle : '{}';
     const content = currInput ? currInput : '';
     const toPost = {content, style};
-    return this.dbPost(toPost);
+    return dbPost(toPost, this);
   }
 
   onInputChange(e) {
@@ -117,15 +97,7 @@ class ToDo extends React.Component {
       this.updateTip(2);
     }
     this.setState({newState});
-    this.dbDelete(id);
-  }
-
-  dbDelete(key) {
-    $.ajax({
-      url: 'http://127.0.0.1:7777/api/todoItems/' + key,
-      contentType: 'application/json',
-      method: 'delete'
-    }, msg => console.log(msg) );
+    dbDelete(id);
   }
 
   applyStyle(style, id) {
@@ -137,12 +109,7 @@ class ToDo extends React.Component {
   }
 
   dbStyleUpdate(key, style) {
-    $.ajax({
-      url: 'http://127.0.0.1:7777/api/todoItems/' + key,
-      contentType: 'application/json',
-      method: 'put',
-      data: JSON.stringify(style)
-    }, msg => console.log(msg) );
+    put(key, style);
   }
 
   render() {
