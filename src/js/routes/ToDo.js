@@ -21,7 +21,6 @@ class ToDo extends React.Component {
     this.updateTip = this.updateTip.bind(this);
     this.onLiClick = this.onLiClick.bind(this);
     this.onLiDoubleClick = this.onLiDoubleClick.bind(this);
-    // this.dbPost = this.dbPost.bind(this);
     this.formatThenPost = this.formatThenPost.bind(this);
   }
 

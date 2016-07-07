@@ -1,10 +1,10 @@
 import React from 'react';
 import { Row, Col, Grid } from 'react-bootstrap';
 
-const SnakeBoard = ({}) => {
+const PlayArea = ({}) => {
   return (
-    <div></div>
+    <div>Play Area Here!</div>
   );
 }
 
-export default SnakeBoard;
+export default PlayArea;

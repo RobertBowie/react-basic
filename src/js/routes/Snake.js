@@ -1,7 +1,9 @@
 import React from 'react';
 import { Row, Col, Grid } from 'react-bootstrap';
 
-import SnakeBoard from '../components/Snake/SnakeBoard';
+import Controls from '../components/Snake/Controls';
+import PlayArea from '../components/Snake/PlayArea';
+import ScoreDisplay from '../components/Snake/ScoreDisplay';
 
 class Snake extends React.Component {
   constructor() {
@@ -30,10 +32,23 @@ class Snake extends React.Component {
           </Row>
 
           <Row className="show-grid">
-            <Col xs={12} md={4}><h1></h1></Col>
-            <Col xs={12} md={4}><SnakeBoard /></Col>
+            <Col xs={12} md={4}></Col>
+            <Col xs={12} md={4}><ScoreDisplay /></Col>
             <Col xs={12} md={4}></Col>
           </Row>
+
+          <Row className="show-grid">
+            <Col xs={12} md={4}></Col>
+            <Col xs={12} md={4}><PlayArea /></Col>
+            <Col xs={12} md={4}></Col>
+          </Row>
+
+          <Row className="show-grid">
+            <Col xs={12} md={4}></Col>
+            <Col xs={12} md={4}><Controls /></Col>
+            <Col xs={12} md={4}></Col>
+          </Row>
+
         </Grid>
       </div>
     );
