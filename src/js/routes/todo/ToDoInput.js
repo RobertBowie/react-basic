@@ -6,7 +6,6 @@ const toDoInput = ({inputTip, inputVal, onChange, onSubmit, placeholder}) => {
     <form onSubmit={onSubmit}>
       <FormGroup>
         <FormControl
-
           type="text"
           onChange={onChange}
           placeholder={placeholder}

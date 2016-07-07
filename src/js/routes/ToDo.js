@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Row, Col, Grid } from 'react-bootstrap';
 import { map as _map } from 'lodash';
+import * as $ from 'jquery';
 
 import ToDoInput from './todo/toDoInput';
 import ToDoItem from './todo/toDoItem';
@@ -10,7 +11,7 @@ class ToDo extends React.Component {
     super();
     this.state = {
       tip: 'Type items and press "Enter"',
-      items: {},
+      items: [],
       input: '',
       used: 0,
     }
@@ -20,10 +21,45 @@ class ToDo extends React.Component {
     this.updateTip = this.updateTip.bind(this);
     this.onLiClick = this.onLiClick.bind(this);
     this.onLiDoubleClick = this.onLiDoubleClick.bind(this);
+    this.dbPost = this.dbPost.bind(this);
+    this.formatThenPost = this.formatThenPost.bind(this);
+  }
+
+  componentDidMount() {
+    this.serverRequest = $.get('http://127.0.0.1:7777/api/todoItems', result => {
+      const itemsArr = result.map(item => {
+        return {content: item.content, style: item.style, _id: item._id};
+      });
+      this.setState({items: itemsArr});
+    });
+  }
+
+  componentWillUnmount() {
+    this.serverRequest.abort();
+  }
+
+  dbPost(item) {
+    $.post({
+      url: 'http://127.0.0.1:7777/api/todoItems',
+      data: JSON.stringify(item),
+      contentType: 'application/json'
+    }, msg => console.log(msg) );
   }
 
   newItem() {
-    return {liStyle: {}};
+    const currInput = this.state.input;
+    let item = {}; // {content: '', style: ''}
+    item.content = currInput;
+    item.style = '';
+    this.formatThenPost(currInput);
+    return item;
+  }
+
+  formatThenPost(currInput, currStyle) {
+    const style = currStyle ? currStyle : '';
+    const content = currInput ? currInput : '';
+    const toPost = {content, style};
+    this.dbPost(toPost);
   }
 
   onInputChange(e) {
@@ -34,9 +70,8 @@ class ToDo extends React.Component {
   onInputSubmit(e) {
     e.preventDefault();
     const input = '';
-    const currInput = this.state.input;
     let items = this.state.items;
-    items[currInput] = this.newItem();
+    items.push(this.newItem());
     this.setState({items, input});
     if (!this.state.used) {
       this.updateTip();
@@ -56,9 +91,7 @@ class ToDo extends React.Component {
       used = 3;
       tip = ' ';
     }
-    console.log(used, num, !!tip);
     if (tip) {
-      console.log('calling setState with: ', {used, tip});
       this.setState({used, tip});
     }
   }
@@ -72,26 +105,34 @@ class ToDo extends React.Component {
     this.setState({newState});
   }
 
-  onLiDoubleClick(liKey, e) {
+  onLiDoubleClick(id, e) {
     const newStyle = {display: 'none'};
-    const newState = this.applyStyle(newStyle, liKey);
+    const newState = this.applyStyle(newStyle, id);
     if (this.state.used === 2) {
       this.updateTip(2);
     }
     this.setState({newState});
+    this.dbDelete(id);
   }
 
-  applyStyle(style, liKey) {
-    let newState = Object.assign({}, this.state);
-    let items = newState.items;
-    let item = items[liKey];
+  dbDelete(key) {
+    $.ajax({
+      url: 'http://127.0.0.1:7777/api/todoItems/' + key,
+      contentType: 'application/json',
+      method: 'delete'
+    }, msg => console.log(msg) );
+  }
+
+  applyStyle(style, id) {
+    let items = this.state.items;
+    let item = items.filter(item => item._id === id)[0];
     item.liStyle = style;
-    return newState;
+    return items;
   }
 
   render() {
     let showList = Object.keys(this.state.items).length > 0;
-
+    console.log(this.state);
     return (
       <Grid>
         <Row>
@@ -112,15 +153,15 @@ class ToDo extends React.Component {
             { showList &&
             <ul>
               {_map(this.state.items,
-                (val, key) => {
-                  let boundClick = this.onLiClick.bind(this, key);
-                  let boundDoubleClick = this.onLiDoubleClick.bind(this, key);
+                (item, index) => {
+                  let boundClick = this.onLiClick.bind(this, item._id);
+                  let boundDoubleClick = this.onLiDoubleClick.bind(this, item._id);
                   return <ToDoItem
-                    key={key}
-                    text={key}
+                    key={item._id}
+                    text={item.content}
                     onClick={boundClick}
                     onDoubleClick={boundDoubleClick}
-                    style={val.liStyle}
+                    style={item.liStyle}
                   />
                 }
               )}
